@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Agreement #{{ adoption.pk }} — PetsFamily{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:760px;">
+
+  <div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem;">
+    <a href="{% url 'home_page' %}" style="color:var(--muted); text-decoration:none; font-size:.88rem;">← Home</a>
+    <button onclick="window.print()" class="btn btn-outline btn-sm">🖨️ Print Agreement</button>
+  </div>
+
+  <!-- Agreement Document -->
+  <div class="card" style="padding:3rem;" id="agreement-doc">
+
+    <!-- Header -->
+    <div style="text-align:center; border-bottom:2px solid var(--sand); padding-bottom:1.5rem; margin-bottom:2rem;">
+      <div style="font-size:2rem; margin-bottom:.5rem;">🐾</div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:var(--brown-dk);">
+        {% if adoption.pet.is_free %}Animal Adoption Agreement{% else %}Pet Purchase Agreement{% endif %}
+      </h1>
+      <p style="color:var(--muted); font-size:.88rem; margin-top:.4rem;">
+        Agreement #{{ adoption.pk }} &nbsp;|&nbsp; Date: {{ adoption.created_at|date:"F j, Y" }}
+      </p>
+      <div style="margin-top:.75rem;">
+        {% if adoption.status == 'pending' %}
+          <span class="badge badge-pending">⏳ Pending Review</span>
+        {% elif adoption.status == 'approved' %}
+          <span class="badge badge-approved">✅ Approved</span>
+        {% else %}
+          <span class="badge badge-rejected">❌ Rejected</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Parties -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+      <div style="background:var(--cream); border-radius:12px; padding:1.25rem;">
+        <div style="font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; margin-bottom:.75rem;">
+          {% if adoption.pet.is_free %}Adopter{% else %}Buyer{% endif %}
+        </div>
+        <div style="font-weight:700; font-size:1rem; color:var(--brown-dk);">{{ adoption.user.get_full_name|default:adoption.user.username }}</div>
+        <div style="font-size:.88rem; color:var(--muted); margin-top:.35rem;">{{ adoption.user.email }}</div>
+        <div style="font-size:.88rem; color:var(--muted);">Username: @{{ adoption.user.username }}</div>
+      </div>
+      <div style="background:var(--cream); border-radius:12px; padding:1.25rem;">
+        <div style="font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; margin-bottom:.75rem;">
+          {% if adoption.pet.owner.is_shelter %}Shelter{% else %}Breeder{% endif %}
+        </div>
+        {% if adoption.pet.owner %}
+          <div style="font-weight:700; font-size:1rem; color:var(--brown-dk);">{{ adoption.pet.owner.name }}</div>
+          {% if adoption.pet.owner.city %}
+            <div style="font-size:.88rem; color:var(--muted); margin-top:.35rem;">📍 {{ adoption.pet.owner.city }}</div>
+          {% endif %}
+          {% if adoption.pet.owner.phone %}
+            <div style="font-size:.88rem; color:var(--muted);">📞 {{ adoption.pet.owner.phone }}</div>
+          {% endif %}
+        {% else %}
+          <div style="color:var(--muted);">—</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Pet Details -->
+    <div style="border:1.5px solid var(--border); border-radius:12px; padding:1.5rem; margin-bottom:2rem;">
+      <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; margin-bottom:1rem;">Subject of Agreement</div>
+      <div style="display:flex; gap:1rem; align-items:center;">
+        {% if adoption.pet.photo %}
+          <img src="{{ adoption.pet.photo.url }}" alt="{{ adoption.pet.name }}" style="width:80px; height:80px; object-fit:cover; border-radius:10px;">
+        {% else %}
+          <div style="width:80px; height:80px; background:var(--warm); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:2.5rem;">🐕</div>
+        {% endif %}
+        <div style="flex:1;">
+          <div style="font-weight:700; font-size:1.2rem; color:var(--brown-dk);">{{ adoption.pet.name }}</div>
+          <div style="color:var(--muted); font-size:.9rem;">{{ adoption.pet.type }} &bull; {{ adoption.pet.breed }}</div>
+          <div style="color:var(--muted); font-size:.9rem;">Age: {{ adoption.pet.age }} year{% if adoption.pet.age != 1 %}s{% endif %}</div>
+          {% if adoption.pet.vaccination %}
+            <div style="color:var(--muted); font-size:.88rem;">Vaccination: {{ adoption.pet.vaccination.name }}{% if adoption.pet.vaccination.certificate %} (with certificate){% endif %}</div>
+          {% endif %}
+        </div>
+        <div style="text-align:right;">
+          {% if adoption.pet.is_free %}
+            <div style="font-weight:700; font-size:1.3rem; color:var(--teal);">Free</div>
+            <div style="font-size:.78rem; color:var(--muted);">Adoption</div>
+          {% else %}
+            <div style="font-weight:700; font-size:1.3rem; color:var(--brown);">${{ adoption.agreed_price }}</div>
+            <div style="font-size:.78rem; color:var(--muted);">Agreed Price</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    {% if adoption.message %}
+    <div style="background:var(--warm); border-radius:10px; padding:1.25rem; margin-bottom:2rem;">
+      <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; margin-bottom:.5rem;">Message from {% if adoption.pet.is_free %}Adopter{% else %}Buyer{% endif %}</div>
+      <p style="color:var(--text); font-size:.92rem; line-height:1.6; font-style:italic;">"{{ adoption.message }}"</p>
+    </div>
+    {% endif %}
+
+    <!-- Terms -->
+    <div style="border-top:1px solid var(--border); padding-top:1.5rem; margin-bottom:2rem;">
+      <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; margin-bottom:1rem;">Terms & Conditions</div>
+      <ol style="color:var(--muted); font-size:.85rem; line-height:1.8; padding-left:1.25rem;">
+        {% if adoption.pet.is_free %}
+          <li>The animal is transferred free of charge from the shelter to the adopter.</li>
+          <li>The adopter agrees to provide proper care, nutrition, and veterinary attention.</li>
+          <li>The adopter will not resell or transfer the animal without prior written consent from the shelter.</li>
+          <li>The shelter may conduct follow-up welfare checks within 6 months of adoption.</li>
+        {% else %}
+          <li>The buyer agrees to pay the agreed price of <strong>${{ adoption.agreed_price }}</strong> to the breeder.</li>
+          <li>The breeder guarantees the animal is healthy and vaccinated as stated above.</li>
+          <li>Ownership transfers upon receipt of full payment.</li>
+          <li>The buyer accepts responsibility for the animal's wellbeing from the date of transfer.</li>
+        {% endif %}
+        <li>This agreement is created on the PetsFamily platform and serves as a record of intent.</li>
+        <li>Both parties agree to comply with applicable animal welfare laws.</li>
+      </ol>
+    </div>
+
+    <!-- Signature Lines -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:1.5rem;">
+      <div>
+        <div style="border-bottom:1.5px solid var(--brown-dk); padding-bottom:.3rem; margin-bottom:.4rem;"></div>
+        <div style="font-size:.8rem; color:var(--muted);">{% if adoption.pet.is_free %}Adopter{% else %}Buyer{% endif %} signature</div>
+        <div style="font-size:.82rem; font-weight:600; color:var(--brown-dk);">{{ adoption.user.get_full_name|default:adoption.user.username }}</div>
+      </div>
+      <div>
+        <div style="border-bottom:1.5px solid var(--brown-dk); padding-bottom:.3rem; margin-bottom:.4rem;"></div>
+        <div style="font-size:.8rem; color:var(--muted);">{% if adoption.pet.owner.is_shelter %}Shelter representative{% else %}Breeder{% endif %}</div>
+        <div style="font-size:.82rem; font-weight:600; color:var(--brown-dk);">{% if adoption.pet.owner %}{{ adoption.pet.owner.name }}{% else %}—{% endif %}</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; font-size:.78rem; color:var(--muted); border-top:1px dashed var(--border); padding-top:1rem;">
+      Generated by PetsFamily &bull; {{ adoption.created_at|date:"F j, Y, g:i a" }} &bull; Agreement #{{ adoption.pk }}
+    </div>
+
+  </div>
+
+  <div style="text-align:center; margin-top:1.5rem;">
+    <a href="{% url 'home_page' %}" class="btn btn-outline">← Browse More Pets</a>
+  </div>
+
+</div>
+
+<style>
+  @media print {
+    nav, footer, .btn, a[href] { display: none !important; }
+    .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+    body { background: #fff; }
+  }
+</style>
+{% endblock %}

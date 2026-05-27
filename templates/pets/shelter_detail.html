@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.name }} — PetsFamily{% endblock %}
+
+{% block content %}
+
+<!-- Profile Header -->
+<div style="background: linear-gradient(135deg, {% if profile.is_shelter %}#2d6358, #3a7d6e{% else %}#5c3d22, #8b5e3c{% endif %}); padding:2.5rem 1.5rem; color:#fff;">
+  <div style="max-width:900px; margin:0 auto;">
+    <div style="margin-bottom:1rem;">
+      <a href="{% url 'shelter_list' %}" style="color:rgba(255,255,255,.7); text-decoration:none; font-size:.88rem;">← All {% if profile.is_shelter %}Shelters{% else %}Breeders{% endif %}</a>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:1.5rem; flex-wrap:wrap;">
+      <div style="width:80px; height:80px; background:rgba(255,255,255,.2); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; flex-shrink:0;">
+        {% if profile.is_shelter %}🏠{% else %}🌟{% endif %}
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex; align-items:center; gap:.75rem; margin-bottom:.5rem; flex-wrap:wrap;">
+          <h1 style="font-family:'Playfair Display',serif; font-size:2rem;">{{ profile.name }}</h1>
+          <span style="background:rgba(255,255,255,.2); padding:.25rem .75rem; border-radius:20px; font-size:.8rem; font-weight:600;">
+            {% if profile.is_shelter %}Shelter{% else %}Breeder{% endif %}
+          </span>
+        </div>
+        <div style="opacity:.8; display:flex; gap:1.5rem; flex-wrap:wrap; font-size:.9rem;">
+          {% if profile.city %}<span>📍 {{ profile.city }}</span>{% endif %}
+          {% if profile.phone %}<span>📞 {{ profile.phone }}</span>{% endif %}
+          {% if profile.is_shelter %}
+            <span>✅ Free adoptions</span>
+          {% else %}
+            <span>💰 Paid animals</span>
+          {% endif %}
+        </div>
+        {% if profile.description %}
+          <p style="margin-top:.75rem; opacity:.85; font-size:.92rem; max-width:580px; line-height:1.6;">{{ profile.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="max-width:900px;">
+
+  <!-- Available Pets -->
+  <h2 class="section-title">
+    {% if profile.is_shelter %}🏠 Available for Adoption{% else %}🌟 Available Pets{% endif %}
+    <span style="font-size:.9rem; font-weight:400; color:var(--muted);">({{ available_pets|length }})</span>
+  </h2>
+
+  {% if available_pets %}
+    <div class="pet-grid" style="margin-bottom:2.5rem;">
+      {% for pet in available_pets %}
+        <a href="{% url 'pet_detail' pet.pk %}" class="pet-card">
+          <div class="pet-card-img">
+            {% if pet.photo %}<img src="{{ pet.photo.url }}" alt="{{ pet.name }}">{% else %}🐕{% endif %}
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-card-name">{{ pet.name }}</div>
+            <div class="pet-card-meta">{{ pet.breed }} &bull; {{ pet.age }} yr{% if pet.age != 1 %}s{% endif %}</div>
+            <div class="pet-card-price">
+              {% if pet.is_free %}<span class="price-free">🏠 Free</span>{% else %}<span class="price-paid">💰 ${{ pet.price }}</span>{% endif %}
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state" style="padding:2rem; background:var(--warm); border-radius:var(--radius); margin-bottom:2rem;">
+      <p>No pets available right now. Check back soon!</p>
+    </div>
+  {% endif %}
+
+  <!-- Already Adopted -->
+  {% if adopted_pets %}
+    <h2 class="section-title" style="color:var(--muted);">
+      Already Adopted <span style="font-size:.9rem; font-weight:400;">({{ adopted_pets|length }})</span>
+    </h2>
+    <div class="pet-grid">
+      {% for pet in adopted_pets %}
+        <div class="pet-card" style="opacity:.65; cursor:default;">
+          <div class="pet-card-img">
+            {% if pet.photo %}<img src="{{ pet.photo.url }}" alt="{{ pet.name }}">{% else %}🐕{% endif %}
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-card-name">{{ pet.name }}</div>
+            <div class="pet-card-meta">{{ pet.breed }}</div>
+            <div style="margin-top:auto; padding-top:.5rem;"><span class="badge badge-unavailable">Reserved</span></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

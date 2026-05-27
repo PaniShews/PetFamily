@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Register — PetsFamily{% endblock %}
+
+{% block content %}
+<div class="container-sm" style="max-width:500px;">
+
+  <div style="margin-bottom:1.5rem;">
+    <a href="{% url 'register' %}" style="color:var(--muted); text-decoration:none; font-size:.88rem;">← Back</a>
+  </div>
+
+  <div class="card" style="padding:2rem;">
+    <div style="text-align:center; margin-bottom:1.75rem;">
+      <div style="font-size:2rem; margin-bottom:.5rem;">👤</div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--brown-dk);">Create your account</h1>
+      <p style="color:var(--muted); font-size:.88rem; margin-top:.3rem;">Start finding your perfect pet companion</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">Create Account</button>
+    </form>
+
+    <p style="text-align:center; color:var(--muted); font-size:.85rem; margin-top:1.25rem;">
+      Already have an account? <a href="{% url 'login' %}" style="color:var(--brown); font-weight:600;">Log in</a>
+    </p>
+  </div>
+
+</div>
+{% endblock %}

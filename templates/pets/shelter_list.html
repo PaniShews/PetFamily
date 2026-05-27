@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Shelters & Breeders — PetsFamily{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+  <!-- SHELTERS -->
+  {% if shelters %}
+  <h2 class="section-title">🏠 Animal Shelters <span style="font-size:.9rem; color:var(--muted); font-weight:400;">(free adoptions)</span></h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; margin-bottom:3rem;">
+    {% for org in shelters %}
+      <a href="{% url 'shelter_detail' org.pk %}" style="text-decoration:none;" class="pet-card" style="flex-direction:row; padding:1.25rem; gap:1rem; align-items:center;">
+        <div style="padding:1.25rem; display:flex; flex-direction:column; gap:.4rem;">
+          <div style="display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;">
+            <span style="font-weight:700; font-size:1rem; color:var(--brown-dk);">{{ org.name }}</span>
+            <span class="badge badge-shelter">🏠 Shelter</span>
+          </div>
+          {% if org.city %}<div style="font-size:.85rem; color:var(--muted);">📍 {{ org.city }}</div>{% endif %}
+          {% if org.phone %}<div style="font-size:.85rem; color:var(--muted);">📞 {{ org.phone }}</div>{% endif %}
+          {% if org.description %}<div style="font-size:.82rem; color:var(--muted); line-height:1.5;">{{ org.description|truncatechars:80 }}</div>{% endif %}
+          <div style="margin-top:.3rem; font-size:.82rem; color:var(--teal); font-weight:600;">
+            {{ org.pets.filter.count }} pets available →
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- BREEDERS -->
+  {% if breeders %}
+  <h2 class="section-title">🌟 Breeders</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem;">
+    {% for org in breeders %}
+      <a href="{% url 'shelter_detail' org.pk %}" style="text-decoration:none;" class="pet-card">
+        <div style="padding:1.25rem; display:flex; flex-direction:column; gap:.4rem;">
+          <div style="display:flex; align-items:center; gap:.6rem; flex-wrap:wrap;">
+            <span style="font-weight:700; font-size:1rem; color:var(--brown-dk);">{{ org.name }}</span>
+            <span class="badge badge-breeder">🌟 Breeder</span>
+          </div>
+          {% if org.city %}<div style="font-size:.85rem; color:var(--muted);">📍 {{ org.city }}</div>{% endif %}
+          {% if org.phone %}<div style="font-size:.85rem; color:var(--muted);">📞 {{ org.phone }}</div>{% endif %}
+          {% if org.description %}<div style="font-size:.82rem; color:var(--muted); line-height:1.5;">{{ org.description|truncatechars:80 }}</div>{% endif %}
+          <div style="margin-top:.3rem; font-size:.82rem; color:var(--brown); font-weight:600;">
+            View pets →
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if not shelters and not breeders %}
+  <div class="empty-state">
+    <div class="emoji">🏠</div>
+    <p>No organizations registered yet.</p>
+    <a href="{% url 'register_organization' %}" class="btn btn-primary">Register Your Shelter or Kennel</a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

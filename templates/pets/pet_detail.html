@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ pet.name }} — PetsFamily{% endblock %}
+
+{% block content %}
+<div style="max-width:860px; margin:0 auto;">
+  <a href="{% url 'home_page' %}" style="color:#3DBE68; font-weight:700; font-size:0.9rem;">← Back to listings</a>
+
+  <div class="card mt-4" style="display:grid; grid-template-columns:1fr 1fr; gap:0; overflow:hidden;">
+
+    <!-- Photo -->
+    <div style="background:#f0f0f5; min-height:380px; overflow:hidden;">
+      {% if pet.photo %}
+        <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" style="width:100%; height:100%; object-fit:cover;">
+      {% else %}
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:6rem; min-height:380px;">🐾</div>
+      {% endif %}
+    </div>
+
+    <!-- Details -->
+    <div class="p-8">
+      <div class="flex items-start justify-between mb-2">
+        <h1 style="font-size:2rem; font-weight:900;">{{ pet.name }}</h1>
+        {% if pet.is_free %}
+          <span class="badge-free" style="font-size:1rem; padding:4px 14px;">Free</span>
+        {% else %}
+          <span class="badge-price" style="font-size:1rem; padding:4px 14px;">${{ pet.price }}</span>
+        {% endif %}
+      </div>
+
+      <p style="color:#6b7280; font-size:1.05rem; margin-bottom:16px;">{{ pet.breed }}</p>
+
+      <div class="flex gap-2 flex-wrap mb-6">
+        <span class="tag">🐾 {{ pet.type }}</span>
+        <span class="tag">🎂 {{ pet.age_display }}</span>
+        {% if pet.vaccination %}
+          <span class="tag">💉 {{ pet.vaccination.name }}</span>
+        {% endif %}
+        {% if pet.owner %}
+          <span class="tag">{% if pet.owner.is_shelter %}🏠 Shelter{% else %}🏅 Breeder{% endif %}</span>
+        {% endif %}
+      </div>
+
+      {% if pet.description %}
+        <p style="color:#444; line-height:1.7; margin-bottom:24px;">{{ pet.description }}</p>
+      {% endif %}
+
+      {% if pet.owner %}
+        <div style="background:#f7f8fa; border-radius:14px; padding:14px 18px; margin-bottom:24px;">
+          <p style="font-weight:700; font-size:0.9rem; margin-bottom:4px;">
+            {{ pet.owner.name }}
+          </p>
+          {% if pet.owner.city %}
+            <p style="color:#6b7280; font-size:0.85rem;">📍 {{ pet.owner.city }}</p>
+          {% endif %}
+          {% if pet.owner.phone %}
+            <p style="color:#6b7280; font-size:0.85rem;">📞 {{ pet.owner.phone }}</p>
+          {% endif %}
+          <a href="{% url 'shelter_detail' pet.owner.pk %}" style="color:#3DBE68; font-size:0.85rem; font-weight:700;">View profile →</a>
+        </div>
+      {% endif %}
+
+      {% if pet.is_available %}
+        {% if user.is_authenticated %}
+          {% if user.organization_profile and user.organization_profile == pet.owner %}
+            <a href="{% url 'edit_pet' pet.pk %}" class="btn-outline w-full text-center block">Edit listing</a>
+          {% else %}
+            <a href="{% url 'make_request' pet.pk %}" class="btn-green w-full text-center block">
+              {% if pet.is_free %}🏠 Adopt{% else %}🛒 Reserve / Buy{% endif %}
+            </a>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'login' %}?next={% url 'pet_detail' pet.pk %}" class="btn-green w-full text-center block">
+            Login to {% if pet.is_free %}adopt{% else %}reserve / buy{% endif %}
+          </a>
+        {% endif %}
+      {% else %}
+        <div style="background:#fef2f2; border-radius:12px; padding:12px 18px; color:#dc2626; font-weight:700; text-align:center;">
+          No longer available
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

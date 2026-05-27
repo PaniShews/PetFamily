@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ profile.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>{{ profile.name }}</h1>
+  <p>{% if profile.is_shelter %}Shelter{% else %}Breeder{% endif %} Dashboard{% if profile.city %} &bull; 📍 {{ profile.city }}{% endif %}</p>
+</div>
+
+<div class="container">
+
+  <!-- Quick Stats -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem;">
+    <div class="card" style="padding:1.25rem; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700; color:var(--brown-dk);">{{ pets|length }}</div>
+      <div style="font-size:.82rem; color:var(--muted);">Total Pets</div>
+    </div>
+    <div class="card" style="padding:1.25rem; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700; color:var(--teal);">{{ pets|length }}</div>
+      <div style="font-size:.82rem; color:var(--muted);">Available</div>
+    </div>
+    <div class="card" style="padding:1.25rem; text-align:center;">
+      <div style="font-size:1.8rem; font-weight:700; color:var(--brown);">{{ adoption_requests|length }}</div>
+      <div style="font-size:.82rem; color:var(--muted);">Requests</div>
+    </div>
+    <div class="card" style="padding:1.25rem; text-align:center;">
+      <a href="{% url 'add_pet' %}" class="btn btn-primary btn-sm" style="margin-top:.25rem;">+ Add Pet</a>
+      <div style="font-size:.78rem; color:var(--muted); margin-top:.4rem;">New listing</div>
+    </div>
+  </div>
+
+  <!-- My Pets -->
+  <div class="card" style="margin-bottom:2rem;">
+    <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <h2 style="font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--brown-dk);">My Pets</h2>
+      <a href="{% url 'add_pet' %}" class="btn btn-primary btn-sm">+ Add Pet</a>
+    </div>
+
+    {% if pets %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Breed</th>
+            <th>Age</th>
+            <th>{% if profile.is_shelter %}Status{% else %}Price{% endif %}</th>
+            <th>Availability</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pet in pets %}
+          <tr>
+            <td>
+              <a href="{% url 'pet_detail' pet.pk %}" style="color:var(--brown-dk); font-weight:600; text-decoration:none;">{{ pet.name }}</a>
+            </td>
+            <td>{{ pet.breed }}</td>
+            <td>{{ pet.age }} yr{% if pet.age != 1 %}s{% endif %}</td>
+            <td>
+              {% if profile.is_shelter %}
+                <span class="badge badge-free">Free</span>
+              {% else %}
+                {% if pet.price %}${{ pet.price }}{% else %}—{% endif %}
+              {% endif %}
+            </td>
+            <td>
+              {% if pet.is_available %}
+                <span class="badge badge-available">Available</span>
+              {% else %}
+                <span class="badge badge-unavailable">Reserved</span>
+              {% endif %}
+            </td>
+            <td style="display:flex; gap:.4rem; flex-wrap:wrap;">
+              <a href="{% url 'edit_pet' pet.pk %}" class="btn btn-outline btn-sm">Edit</a>
+              <form method="post" action="{% url 'delete_pet' pet.pk %}" onsubmit="return confirm('Delete {{ pet.name }}?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="emoji">🐾</div>
+      <p>No pets listed yet.</p>
+      <a href="{% url 'add_pet' %}" class="btn btn-primary">Add Your First Pet</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Adoption Requests -->
+  <div class="card">
+    <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border);">
+      <h2 style="font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--brown-dk);">
+        {% if profile.is_shelter %}Adoption{% else %}Purchase{% endif %} Requests
+      </h2>
+    </div>
+
+    {% if adoption_requests %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pet</th>
+            <th>From</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for req in adoption_requests %}
+          <tr>
+            <td>
+              <a href="{% url 'pet_detail' req.pet.pk %}" style="color:var(--brown-dk); font-weight:600; text-decoration:none;">{{ req.pet.name }}</a>
+            </td>
+            <td>{{ req.user.get_full_name|default:req.user.username }}</td>
+            <td style="max-width:200px; color:var(--muted); font-size:.82rem;">
+              {{ req.message|truncatechars:60|default:"—" }}
+            </td>
+            <td style="font-size:.82rem; color:var(--muted);">{{ req.created_at|date:"M j, Y" }}</td>
+            <td><span class="badge badge-{{ req.status }}">{{ req.get_status_display }}</span></td>
+            <td style="display:flex; gap:.4rem; flex-wrap:wrap; align-items:center;">
+              <a href="{% url 'agreement' req.pk %}" class="btn btn-outline btn-sm">View</a>
+              {% if req.status == 'pending' %}
+              <form method="post" action="{% url 'update_request_status' req.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="approved">
+                <button type="submit" class="btn btn-teal btn-sm">Approve</button>
+              </form>
+              <form method="post" action="{% url 'update_request_status' req.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="rejected">
+                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="emoji">📬</div>
+      <p>No requests yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{% if edit %}Edit {{ pet.name }}{% else %}Add a Pet{% endif %} — PetsFamily{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+
+  <div style="margin-bottom:1.5rem;">
+    <a href="{% url 'dashboard' %}" style="color:var(--muted); text-decoration:none; font-size:.88rem;">← Back to Dashboard</a>
+  </div>
+
+  <div class="card" style="padding:2rem;">
+    <h1 style="font-family:'Playfair Display',serif; font-size:1.6rem; color:var(--brown-dk); margin-bottom:.4rem;">
+      {% if edit %}✏️ Edit {{ pet.name }}{% else %}🐾 Add a New Pet{% endif %}
+    </h1>
+    <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.75rem;">
+      Listing for <strong>{{ profile.name }}</strong>
+      {% if profile.is_shelter %}&nbsp;— animals are listed as <strong>free</strong> (shelter){% endif %}
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% for field in form %}
+        {% if field.is_hidden %}
+          {{ field }}
+        {% else %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">
+              {{ field.label }}
+              {% if field.field.required %}<span style="color:var(--rose);">*</span>{% endif %}
+            </label>
+            {{ field }}
+            {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+            {% if field.errors %}
+              <ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% if profile.is_shelter %}
+        <div style="background:var(--teal-lt); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; font-size:.85rem; color:var(--teal);">
+          🏠 As a shelter, your pets are listed as <strong>free</strong> automatically.
+        </div>
+      {% endif %}
+
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap;">
+        <button type="submit" class="btn btn-primary" style="flex:1;">
+          {% if edit %}Save Changes{% else %}Add Pet{% endif %}
+        </button>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

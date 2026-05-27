@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Register Organization — PetsFamily{% endblock %}
+
+{% block content %}
+<div class="container-sm" style="max-width:500px;">
+
+  <div style="margin-bottom:1.5rem;">
+    <a href="{% url 'register' %}" style="color:var(--muted); text-decoration:none; font-size:.88rem;">← Back</a>
+  </div>
+
+  <div class="card" style="padding:2rem;">
+    <div style="text-align:center; margin-bottom:1.75rem;">
+      <div style="font-size:2rem; margin-bottom:.5rem;">🏠</div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--brown-dk);">Register your organization</h1>
+      <p style="color:var(--muted); font-size:.88rem; margin-top:.3rem;">Shelter or breeder — list your animals on PetsFamily</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- Account Fields -->
+      <div style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:.75rem; padding-bottom:.4rem; border-bottom:1px solid var(--border);">Account Details</div>
+      {% for field in form %}
+        {% if field.name in 'username,email,password1,password2' %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Organization Fields -->
+      <div style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:1.25rem 0 .75rem; padding-bottom:.4rem; border-bottom:1px solid var(--border);">Organization Details</div>
+      {% for field in form %}
+        {% if field.name not in 'username,email,password1,password2' %}
+        <div class="form-group">
+          {% if field.field.widget.input_type == 'checkbox' %}
+            <div class="form-checkbox">
+              {{ field }}
+              <label for="{{ field.id_for_label }}" style="margin:0; font-weight:500; cursor:pointer;">{{ field.label }}</label>
+            </div>
+            {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% endif %}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <div style="background:var(--warm); border-radius:10px; padding:.9rem 1rem; margin-bottom:1.25rem; font-size:.82rem; color:var(--muted);">
+        💡 <strong>Shelter</strong> = animals are listed free. <strong>Breeder</strong> = you set prices per animal.
+      </div>
+
+      <button type="submit" class="btn btn-teal btn-full">Register Organization</button>
+    </form>
+
+    <p style="text-align:center; color:var(--muted); font-size:.85rem; margin-top:1.25rem;">
+      Already registered? <a href="{% url 'login' %}" style="color:var(--brown); font-weight:600;">Log in</a>
+    </p>
+  </div>
+
+</div>
+{% endblock %}

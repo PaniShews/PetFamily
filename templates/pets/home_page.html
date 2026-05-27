@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Browse Pets — PetsFamily{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div style="background: linear-gradient(135deg, #e8f9ef 0%, #f0fdf4 100%); border-radius: 24px;" class="px-8 py-12 mb-10 text-center">
+  <h1 style="font-size: 2.6rem; font-weight: 900; color: #1e2230;" class="mb-3">
+    Find Your Perfect Companion 🐾
+  </h1>
+
+  <!-- Search bar -->
+  <form method="get" class="flex flex-wrap gap-3 justify-center items-center">
+    <input
+      type="text" name="q" value="{{ search }}"
+      placeholder="Search by name or breed..."
+      style="border:2px solid #d1fae5; border-radius:14px; padding:10px 20px; width:280px; font-size:0.95rem; outline:none;"
+      onfocus="this.style.borderColor='#3DBE68'" onblur="this.style.borderColor='#d1fae5'"
+    >
+
+    <select name="type" style="border:2px solid #d1fae5; border-radius:14px; padding:10px 16px; font-size:0.95rem; outline:none; background:#fff;">
+      <option value="">All types</option>
+      {% for at in animal_types %}
+        <option value="{{ at.id }}" {% if selected_type == at.id|stringformat:"s" %}selected{% endif %}>{{ at.name }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="source" style="border:2px solid #d1fae5; border-radius:14px; padding:10px 16px; font-size:0.95rem; outline:none; background:#fff;">
+      <option value="">All sources</option>
+      <option value="shelter" {% if selected_source == "shelter" %}selected{% endif %}>🏠 Shelters (free)</option>
+      <option value="breeder" {% if selected_source == "breeder" %}selected{% endif %}>🏅 Breeders</option>
+    </select>
+
+    <button type="submit" class="btn-green">Search</button>
+    {% if search or selected_type or selected_source %}
+      <a href="{% url 'home_page' %}" class="btn-outline">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+<!-- PET GRID -->
+{% if pets %}
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:24px;">
+    {% for pet in pets %}
+    <a href="{% url 'pet_detail' pet.pk %}" style="text-decoration:none; color:inherit;">
+      <div class="card">
+        <!-- Photo -->
+        <div style="height:200px; overflow:hidden; background:#f0f0f5;">
+          {% if pet.photo %}
+            <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" style="width:100%; height:100%; object-fit:cover;">
+          {% else %}
+            <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:4rem;">🐾</div>
+          {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-1">
+            <h3 style="font-size:1.3rem; font-weight:900;">{{ pet.name }}</h3>
+            {% if pet.is_free %}
+              <span class="badge-free">Free</span>
+            {% else %}
+              <span class="badge-price">${{ pet.price }}</span>
+            {% endif %}
+          </div>
+          <p style="color:#6b7280; font-size:0.9rem; margin-bottom:8px;">{{ pet.breed }}</p>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <span class="tag">{{ pet.type }}</span>
+            <span class="tag">{{ pet.age_display }}</span>
+            {% if pet.owner %}
+              <span class="tag">{% if pet.owner.is_shelter %}🏠 Shelter{% else %}🏅 Breeder{% endif %}</span>
+            {% endif %}
+          </div>
+          <span class="btn-green w-full text-center block text-sm">
+            {% if pet.is_free %}Adopt{% else %}View{% endif %}
+          </span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-center py-20">
+    <div style="font-size:4rem;">🐾</div>
+    <h3 style="font-size:1.4rem; font-weight:800; margin-top:12px;">No pets found</h3>
+    <p style="color:#6b7280; margin-top:6px;">Try adjusting your filters or search terms.</p>
+  </div>
+{% endif %}
+
+{% endblock %}
