@@ -30,7 +30,6 @@ def register_user(request):
 def register_organization(request):
     if request.user.is_authenticated:
         return redirect("home_page")
-    #тут десь помилка була, пофіксити
     if request.method == "POST":
         form = OrganizationRegistrationForm(request.POST)
         if form.is_valid():
