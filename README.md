@@ -33,12 +33,12 @@ git clone https://github.com/PaniShews/PetFamily.git
 
 ## Home page
 
-![Home](static/images/Home_page.png)
+![Home](screenshots/Home_page.png)
 
 ## Pet detail
 
-![Pet detail](static/images/Pet_detail.png)
+![Pet detail](screenshots/Pet_detail_page.png)
 
 ## Register choice
 
-![Register choice](static/images/Register_choice.png)
+![Register choice](screenshots/Register_choice_page.png)
