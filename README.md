@@ -29,3 +29,16 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/PaniShews/PetFamily.git
+```
+
+## Home page
+
+![Home](images/Home_page.png)
+
+## Pet detail
+
+![Pet detail](images/Pet_detail.png)
+
+## Register choice
+
+![Register choice](images/Register_choice.png)

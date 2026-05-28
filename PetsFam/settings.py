@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "pets",
     "users",
     "tailwind",
-    "theme",
+    "tailwind_theme",
 ]
 
 MIDDLEWARE = [
@@ -130,4 +130,4 @@ AUTH_USER_MODEL = "users.User"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-TAILWIND_APP_NAME = "theme"
+TAILWIND_APP_NAME = "tailwind_theme"
