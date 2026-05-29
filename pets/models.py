@@ -27,11 +27,7 @@ class AnimalType(models.Model):
 
 class Pet(models.Model):
     name = models.CharField(max_length=100)
-    type = models.ForeignKey(
-        AnimalType,
-        on_delete=models.CASCADE,
-        related_name="pets"
-    )
+    type = models.ForeignKey(AnimalType, on_delete=models.CASCADE, related_name="pets")
     breed = models.CharField(max_length=100)
     age = models.PositiveIntegerField(help_text="Age in months")
     description = models.TextField(blank=True)
@@ -42,13 +38,10 @@ class Pet(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="pets"
+        related_name="pets",
     )
     vaccination = models.ForeignKey(
-        Vaccination,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+        Vaccination, on_delete=models.SET_NULL, null=True, blank=True
     )
     price = models.DecimalField(
         max_digits=10,
@@ -56,7 +49,7 @@ class Pet(models.Model):
         null=True,
         blank=True,
         help_text="Leave empty if free (shelter animal)",
-        validators=[MinValueValidator(0, message="Price cannot be negative.")]
+        validators=[MinValueValidator(0, message="Price cannot be negative.")],
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,14 +87,14 @@ class AdoptionRequest(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="adoption_requests"
+        related_name="adoption_requests",
     )
     pet = models.ForeignKey(
-        Pet,
-        on_delete=models.CASCADE,
-        related_name="adoption_requests"
+        Pet, on_delete=models.CASCADE, related_name="adoption_requests"
     )
-    request_type = models.CharField(max_length=10, choices=REQUEST_TYPE_CHOICES, default="adopt")
+    request_type = models.CharField(
+        max_length=10, choices=REQUEST_TYPE_CHOICES, default="adopt"
+    )
     message = models.TextField(blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -113,9 +106,7 @@ class AdoptionRequest(models.Model):
 
 class PurchaseAgreement(models.Model):
     adoption_request = models.OneToOneField(
-        AdoptionRequest,
-        on_delete=models.CASCADE,
-        related_name="agreement"
+        AdoptionRequest, on_delete=models.CASCADE, related_name="agreement"
     )
     buyer_full_name = models.CharField(max_length=200)
     buyer_address = models.TextField()
@@ -126,7 +117,7 @@ class PurchaseAgreement(models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        validators=[MinValueValidator(0, message="Price cannot be negative.")]
+        validators=[MinValueValidator(0, message="Price cannot be negative.")],
     )
     terms = models.TextField(blank=True)
     signed_at = models.DateTimeField(auto_now_add=True)

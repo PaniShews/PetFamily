@@ -7,14 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pets', '0002_alter_pet_age_alter_pet_price_and_more'),
-        ('users', '0004_alter_user_options'),
+        ("pets", "0002_alter_pet_age_alter_pet_price_and_more"),
+        ("users", "0004_alter_user_options"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pet',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pets', to='users.breedershelterprofile'),
+            model_name="pet",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="pets",
+                to="users.breedershelterprofile",
+            ),
         ),
     ]

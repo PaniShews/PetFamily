@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from pets.models import Pet, AnimalType, AdoptionRequest, Vaccination
+from pets.models import Pet, AnimalType, AdoptionRequest
 from users.models import User, BreederShelterProfile
 
 
@@ -55,6 +55,7 @@ class PetModelTest(TestCase):
 
     def test_age_cannot_be_negative(self):
         from django.core.exceptions import ValidationError
+
         animal_type = AnimalType.objects.get_or_create(name="Dog")[0]
         pet = Pet(name="X", type=animal_type, breed="X", age=-1, owner=self.shelter)
         with self.assertRaises(ValidationError):
@@ -62,8 +63,11 @@ class PetModelTest(TestCase):
 
     def test_price_cannot_be_negative(self):
         from django.core.exceptions import ValidationError
+
         animal_type = AnimalType.objects.get_or_create(name="Dog")[0]
-        pet = Pet(name="X", type=animal_type, breed="X", age=1, owner=self.breeder, price=-10)
+        pet = Pet(
+            name="X", type=animal_type, breed="X", age=1, owner=self.breeder, price=-10
+        )
         with self.assertRaises(ValidationError):
             pet.full_clean()
 
@@ -166,7 +170,7 @@ class ReservePetViewTest(TestCase):
         self.client.force_login(self.adopter)
         response = self.client.post(
             reverse("reserve_pet", args=[self.pet.pk]),
-            {"message": "I would love to adopt Buddy!"}
+            {"message": "I would love to adopt Buddy!"},
         )
         self.assertEqual(AdoptionRequest.objects.count(), 1)
         adoption = AdoptionRequest.objects.first()
@@ -176,8 +180,7 @@ class ReservePetViewTest(TestCase):
     def test_reserve_post_marks_pet_unavailable(self):
         self.client.force_login(self.adopter)
         self.client.post(
-            reverse("reserve_pet", args=[self.pet.pk]),
-            {"message": "Please!"}
+            reverse("reserve_pet", args=[self.pet.pk]), {"message": "Please!"}
         )
         self.pet.refresh_from_db()
         self.assertFalse(self.pet.is_available)
@@ -185,8 +188,7 @@ class ReservePetViewTest(TestCase):
     def test_reserve_post_redirects_to_agreement(self):
         self.client.force_login(self.adopter)
         response = self.client.post(
-            reverse("reserve_pet", args=[self.pet.pk]),
-            {"message": ""}
+            reverse("reserve_pet", args=[self.pet.pk]), {"message": ""}
         )
         self.assertRedirects(response, reverse("agreement", args=[1]))
 
@@ -262,24 +264,30 @@ class AddPetViewTest(TestCase):
 
     def test_add_pet_post_creates_pet(self):
         self.client.force_login(self.org_user)
-        self.client.post(reverse("add_pet"), {
-            "name": "NewDog",
-            "type": self.animal_type.pk,
-            "breed": "Poodle",
-            "age": 3,
-            "description": "",
-        })
+        self.client.post(
+            reverse("add_pet"),
+            {
+                "name": "NewDog",
+                "type": self.animal_type.pk,
+                "breed": "Poodle",
+                "age": 3,
+                "description": "",
+            },
+        )
         self.assertTrue(Pet.objects.filter(name="NewDog").exists())
 
     def test_shelter_pet_has_no_price(self):
         self.client.force_login(self.org_user)
-        self.client.post(reverse("add_pet"), {
-            "name": "FreeDog",
-            "type": self.animal_type.pk,
-            "breed": "Mix",
-            "age": 1,
-            "price": 999,  # should be ignored for shelter
-        })
+        self.client.post(
+            reverse("add_pet"),
+            {
+                "name": "FreeDog",
+                "type": self.animal_type.pk,
+                "breed": "Mix",
+                "age": 1,
+                "price": 999,  # should be ignored for shelter
+            },
+        )
         pet = Pet.objects.filter(name="FreeDog").first()
         if pet:
             self.assertIsNone(pet.price)

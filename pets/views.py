@@ -1,9 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+    TemplateView,
+)
 
 from .forms.pet_form import PetForm, AdoptionRequestForm
 from .models import Pet, AdoptionRequest, AnimalType
@@ -65,7 +72,9 @@ class SheltersListView(ListView):
     context_object_name = "profiles"
 
     def get_queryset(self):
-        return BreederShelterProfile.objects.select_related("user", "city").order_by("name")
+        return BreederShelterProfile.objects.select_related("user", "city").order_by(
+            "name"
+        )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -113,12 +122,15 @@ class ReservePetView(LoginRequiredMixin, View):
             adoption.save()
             pet.is_available = False
             pet.save()
-            messages.success(request, f"Your request for {pet.name} has been submitted!")
+            messages.success(
+                request, f"Your request for {pet.name} has been submitted!"
+            )
             return redirect("agreement", pk=adoption.pk)
         return self._render(request, pet, form)
 
     def _render(self, request, pet, form):
         from django.shortcuts import render
+
         return render(request, self.template_name, {"pet": pet, "form": form})
 
 
@@ -131,8 +143,7 @@ class AgreementView(LoginRequiredMixin, DetailView):
         response = super().dispatch(request, *args, **kwargs)
         adoption = self.get_object()
         is_owner = (
-            request.user == adoption.pet.owner.user
-            if adoption.pet.owner else False
+            request.user == adoption.pet.owner.user if adoption.pet.owner else False
         )
         if adoption.user != request.user and not is_owner:
             messages.error(request, "You don't have permission to view this agreement.")
@@ -149,8 +160,7 @@ class DashboardView(OrgRequiredMixin, TemplateView):
         ctx["profile"] = profile
         ctx["pets"] = Pet.objects.filter(owner=profile).order_by("-created_at")
         ctx["adoption_requests"] = (
-            AdoptionRequest.objects
-            .filter(pet__owner=profile)
+            AdoptionRequest.objects.filter(pet__owner=profile)
             .select_related("user", "pet")
             .order_by("-created_at")
         )
@@ -244,16 +254,3 @@ class UpdateRequestStatusView(OrgRequiredMixin, View):
             messages.success(request, f"Request {new_status}.")
 
         return redirect("dashboard")
-
-
-home_page = HomePageView.as_view()
-pet_detail = PetDetailView.as_view()
-reserve_pet = ReservePetView.as_view()
-agreement = AgreementView.as_view()
-shelters_list = SheltersListView.as_view()
-shelter_detail = ShelterDetailView.as_view()
-dashboard = DashboardView.as_view()
-add_pet = AddPetView.as_view()
-edit_pet = EditPetView.as_view()
-delete_pet = DeletePetView.as_view()
-update_request_status = UpdateRequestStatusView.as_view()

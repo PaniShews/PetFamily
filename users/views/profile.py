@@ -1,41 +1,49 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import FormView, ListView
+
 from users.forms.profile_form import BreederShelterProfileForm
 from pets.models import AdoptionRequest
 
 
-@login_required
-def profile_view(request):
-    profile = getattr(request.user, "organization_profile", None)
+class ProfileView(LoginRequiredMixin, FormView):
+    template_name = "registration/profile.html"
+    form_class = BreederShelterProfileForm
+    success_url = reverse_lazy("profile")
 
-    if request.method == "POST":
+    def get_profile(self):
+        return getattr(self.request.user, "organization_profile", None)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        profile = self.get_profile()
         if profile:
-            form = BreederShelterProfileForm(request.POST, request.FILES, instance=profile)
-        else:
-            form = BreederShelterProfileForm(request.POST, request.FILES)
+            kwargs["instance"] = profile
+        if self.request.method == "POST":
+            kwargs["files"] = self.request.FILES
+        return kwargs
 
-        if form.is_valid():
-            p = form.save(commit=False)
-            p.user = request.user
-            p.save()
-            messages.success(request, "Profile saved!")
-            return redirect("profile")
-    else:
-        form = BreederShelterProfileForm(instance=profile) if profile else BreederShelterProfileForm()
+    def form_valid(self, form):
+        p = form.save(commit=False)
+        p.user = self.request.user
+        p.save()
+        messages.success(self.request, "Profile saved!")
+        return super().form_valid(form)
 
-    return render(request, "registration/profile.html", {
-        "form": form,
-        "profile": profile,
-    })
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["profile"] = self.get_profile()
+        return ctx
 
 
-@login_required
-def my_requests(request):
-    adoption_requests = AdoptionRequest.objects.filter(
-        user=request.user
-    ).select_related("pet", "pet__owner").order_by("-created_at")
+class MyRequestsView(LoginRequiredMixin, ListView):
+    template_name = "pets/my_requests.html"
+    context_object_name = "adoption_requests"
 
-    return render(request, "pets/my_requests.html", {
-        "adoption_requests": adoption_requests,
-    })
+    def get_queryset(self):
+        return (
+            AdoptionRequest.objects.filter(user=self.request.user)
+            .select_related("pet", "pet__owner")
+            .order_by("-created_at")
+        )

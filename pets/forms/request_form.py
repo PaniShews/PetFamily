@@ -10,7 +10,14 @@ class RegularUserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ["username", "first_name", "last_name", "email", "password1", "password2"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        ]
 
 
 class OrganizationRegistrationForm(UserCreationForm):
@@ -20,12 +27,12 @@ class OrganizationRegistrationForm(UserCreationForm):
     description = forms.CharField(
         widget=forms.Textarea(attrs={"rows": 3}),
         required=False,
-        label="About your organization"
+        label="About your organization",
     )
     is_shelter = forms.BooleanField(
         required=False,
         label="We are a shelter (animals are free)",
-        help_text="Leave unchecked if you are a breeder (animals have a price)."
+        help_text="Leave unchecked if you are a breeder (animals have a price).",
     )
 
     class Meta:

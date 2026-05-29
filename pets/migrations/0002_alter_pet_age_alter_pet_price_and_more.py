@@ -7,23 +7,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pets', '0001_initial'),
+        ("pets", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='pet',
-            name='age',
-            field=models.PositiveIntegerField(help_text='Age in months'),
+            model_name="pet",
+            name="age",
+            field=models.PositiveIntegerField(help_text="Age in months"),
         ),
         migrations.AlterField(
-            model_name='pet',
-            name='price',
-            field=models.DecimalField(blank=True, decimal_places=2, help_text='Leave empty if free (shelter animal)', max_digits=10, null=True, validators=[django.core.validators.MinValueValidator(0, message='Price cannot be negative.')]),
+            model_name="pet",
+            name="price",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                help_text="Leave empty if free (shelter animal)",
+                max_digits=10,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(
+                        0, message="Price cannot be negative."
+                    )
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='purchaseagreement',
-            name='agreed_price',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True, validators=[django.core.validators.MinValueValidator(0, message='Price cannot be negative.')]),
+            model_name="purchaseagreement",
+            name="agreed_price",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=10,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(
+                        0, message="Price cannot be negative."
+                    )
+                ],
+            ),
         ),
     ]

@@ -10,75 +10,208 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AnimalType',
+            name="AnimalType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Vaccination',
+            name="Vaccination",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('certificate', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("certificate", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='Pet',
+            name="Pet",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('breed', models.CharField(max_length=100)),
-                ('age', models.IntegerField(help_text='Age in months')),
-                ('description', models.TextField(blank=True)),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='animals/')),
-                ('is_available', models.BooleanField(default=True)),
-                ('price', models.DecimalField(blank=True, decimal_places=2, help_text='Leave empty if free (shelter animal)', max_digits=10, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('owner', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pets', to='users.breedershelterprofile')),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pets', to='pets.animaltype')),
-                ('vaccination', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='pets.vaccination')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("breed", models.CharField(max_length=100)),
+                ("age", models.IntegerField(help_text="Age in months")),
+                ("description", models.TextField(blank=True)),
+                (
+                    "photo",
+                    models.ImageField(blank=True, null=True, upload_to="animals/"),
+                ),
+                ("is_available", models.BooleanField(default=True)),
+                (
+                    "price",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=2,
+                        help_text="Leave empty if free (shelter animal)",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pets",
+                        to="users.breedershelterprofile",
+                    ),
+                ),
+                (
+                    "type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pets",
+                        to="pets.animaltype",
+                    ),
+                ),
+                (
+                    "vaccination",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="pets.vaccination",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AdoptionRequest',
+            name="AdoptionRequest",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('request_type', models.CharField(choices=[('adopt', 'Adopt'), ('reserve', 'Reserve'), ('buy', 'Buy')], default='adopt', max_length=10)),
-                ('message', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected'), ('completed', 'Completed')], default='pending', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='adoption_requests', to=settings.AUTH_USER_MODEL)),
-                ('pet', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='adoption_requests', to='pets.pet')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "request_type",
+                    models.CharField(
+                        choices=[
+                            ("adopt", "Adopt"),
+                            ("reserve", "Reserve"),
+                            ("buy", "Buy"),
+                        ],
+                        default="adopt",
+                        max_length=10,
+                    ),
+                ),
+                ("message", models.TextField(blank=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pending"),
+                            ("approved", "Approved"),
+                            ("rejected", "Rejected"),
+                            ("completed", "Completed"),
+                        ],
+                        default="pending",
+                        max_length=10,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="adoption_requests",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "pet",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="adoption_requests",
+                        to="pets.pet",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PurchaseAgreement',
+            name="PurchaseAgreement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('buyer_full_name', models.CharField(max_length=200)),
-                ('buyer_address', models.TextField()),
-                ('buyer_phone', models.CharField(max_length=20)),
-                ('seller_full_name', models.CharField(max_length=200)),
-                ('agreed_price', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
-                ('terms', models.TextField(blank=True)),
-                ('signed_at', models.DateTimeField(auto_now_add=True)),
-                ('adoption_request', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='agreement', to='pets.adoptionrequest')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("buyer_full_name", models.CharField(max_length=200)),
+                ("buyer_address", models.TextField()),
+                ("buyer_phone", models.CharField(max_length=20)),
+                ("seller_full_name", models.CharField(max_length=200)),
+                (
+                    "agreed_price",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=10, null=True
+                    ),
+                ),
+                ("terms", models.TextField(blank=True)),
+                ("signed_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "adoption_request",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="agreement",
+                        to="pets.adoptionrequest",
+                    ),
+                ),
             ],
         ),
     ]

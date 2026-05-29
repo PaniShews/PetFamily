@@ -9,11 +9,18 @@ class BreederShelterProfileForm(forms.ModelForm):
         model = BreederShelterProfile
         fields = ["name", "city", "phone", "description", "is_shelter"]
         widgets = {
-            "name": forms.TextInput(attrs={"class": INPUT_CLASS, "placeholder": "Organization name"}),
+            "name": forms.TextInput(
+                attrs={"class": INPUT_CLASS, "placeholder": "Organization name"}
+            ),
             "city": forms.Select(attrs={"class": INPUT_CLASS}),
-            "phone": forms.TextInput(attrs={"class": INPUT_CLASS, "placeholder": "+380..."}),
-            "description": forms.Textarea(attrs={
-                "class": INPUT_CLASS, "rows": 4,
-                "placeholder": "Tell us about your shelter or breeding program...",
-            }),
+            "phone": forms.TextInput(
+                attrs={"class": INPUT_CLASS, "placeholder": "+380..."}
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": INPUT_CLASS,
+                    "rows": 4,
+                    "placeholder": "Tell us about your shelter or breeding program...",
+                }
+            ),
         }

@@ -5,7 +5,16 @@ from pets.models import Pet, AdoptionRequest
 class PetForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ["name", "type", "breed", "age", "description", "photo", "vaccination", "price"]
+        fields = [
+            "name",
+            "type",
+            "breed",
+            "age",
+            "description",
+            "photo",
+            "vaccination",
+            "price",
+        ]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
         }
@@ -28,10 +37,12 @@ class AdoptionRequestForm(forms.ModelForm):
         model = AdoptionRequest
         fields = ["message"]
         widgets = {
-            "message": forms.Textarea(attrs={
-                "rows": 4,
-                "placeholder": "Introduce yourself and tell us why you'd like to adopt this pet..."
-            }),
+            "message": forms.Textarea(
+                attrs={
+                    "rows": 4,
+                    "placeholder": "Introduce yourself and tell us why you'd like to adopt this pet...",
+                }
+            ),
         }
         labels = {
             "message": "Your message to the owner (optional)",

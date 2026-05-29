@@ -7,35 +7,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pets', '0002_alter_pet_age_alter_pet_price_and_more'),
-        ('users', '0002_alter_breedershelterprofile_city'),
+        ("pets", "0002_alter_pet_age_alter_pet_price_and_more"),
+        ("users", "0002_alter_breedershelterprofile_city"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='breedershelterprofile',
-            name='created_at',
+            model_name="breedershelterprofile",
+            name="created_at",
         ),
         migrations.RemoveField(
-            model_name='breedershelterprofile',
-            name='logo',
+            model_name="breedershelterprofile",
+            name="logo",
         ),
         migrations.RemoveField(
-            model_name='breedershelterprofile',
-            name='profile_type',
+            model_name="breedershelterprofile",
+            name="profile_type",
         ),
         migrations.RemoveField(
-            model_name='breedershelterprofile',
-            name='website',
+            model_name="breedershelterprofile",
+            name="website",
         ),
         migrations.AddField(
-            model_name='breedershelterprofile',
-            name='is_shelter',
-            field=models.BooleanField(default=False, help_text='Check if this is a shelter (animals are free). Uncheck for breeders.'),
+            model_name="breedershelterprofile",
+            name="is_shelter",
+            field=models.BooleanField(
+                default=False,
+                help_text="Check if this is a shelter (animals are free). Uncheck for breeders.",
+            ),
         ),
         migrations.AlterField(
-            model_name='breedershelterprofile',
-            name='city',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='pets.city'),
+            model_name="breedershelterprofile",
+            name="city",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="pets.city",
+            ),
         ),
     ]

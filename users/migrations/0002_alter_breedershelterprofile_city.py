@@ -7,14 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pets', '0001_initial'),
-        ('users', '0001_initial'),
+        ("pets", "0001_initial"),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='breedershelterprofile',
-            name='city',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='pets.city'),
+            model_name="breedershelterprofile",
+            name="city",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="pets.city"
+            ),
         ),
     ]
