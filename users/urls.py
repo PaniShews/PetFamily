@@ -17,7 +17,7 @@ urlpatterns = [
         name="register_organization",
     ),
     path("login/", LoginView.as_view(), name="login"),
-    path("logout/", LogoutView.as_view(next_page="/"), name="logout"),
+    path("logout/", LogoutView.as_view(), name="logout"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("my-requests/", MyRequestsView.as_view(), name="my_requests"),
 ]
