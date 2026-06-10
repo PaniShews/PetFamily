@@ -62,14 +62,14 @@
       {% if pet.is_available %}
         {% if user.is_authenticated %}
           {% if user.organization_profile and user.organization_profile == pet.owner %}
-            <a href="{% url 'edit_pet' pet.pk %}" class="btn-outline w-full text-center block">Edit listing</a>
+            <a href="{% url 'edit_pet' pet.pk %}" class="btn btn-outline w-full text-center block">Edit listing</a>
           {% else %}
-            <a href="{% url 'make_request' pet.pk %}" class="btn-green w-full text-center block">
+            <a href="{% url 'reserve_pet' pet.pk %}" class="btn btn-teal w-full text-center block">
               {% if pet.is_free %}🏠 Adopt{% else %}🛒 Reserve / Buy{% endif %}
             </a>
           {% endif %}
         {% else %}
-          <a href="{% url 'login' %}?next={% url 'pet_detail' pet.pk %}" class="btn-green w-full text-center block">
+          <a href="{% url 'login' %}?next={% url 'pet_detail' pet.pk %}" class="btn btn-teal w-full text-center block">
             Login to {% if pet.is_free %}adopt{% else %}reserve / buy{% endif %}
           </a>
         {% endif %}

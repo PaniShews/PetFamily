@@ -1,5 +1,5 @@
 from django import forms
-from pets.models import Pet, AdoptionRequest
+from pets.models import Pet, AdoptionRequest, AnimalType, Vaccination  # ← додай Vaccination
 
 
 class PetForm(forms.ModelForm):
@@ -18,6 +18,20 @@ class PetForm(forms.ModelForm):
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+            first_type = AnimalType.objects.first()
+            if first_type:
+                self.fields["type"].initial = first_type.pk
+
+            first_vaccine = Vaccination.objects.first()
+            if first_vaccine:
+                self.fields["vaccination"].initial = first_vaccine.pk
+
+        self.fields["vaccination"].required = False
+        self.fields["vaccination"].empty_label = "— No vaccination info —"
 
     def clean_age(self):
         age = self.cleaned_data.get("age")

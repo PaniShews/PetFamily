@@ -25,20 +25,19 @@
       {% endfor %}
     </select>
 
-    <select name="source" style="border:2px solid #d1fae5; border-radius:14px; padding:10px 16px; font-size:0.95rem; outline:none; background:#fff;">
-      <option value="">All sources</option>
-      <option value="shelter" {% if selected_source == "shelter" %}selected{% endif %}>🏠 Shelters (free)</option>
-      <option value="breeder" {% if selected_source == "breeder" %}selected{% endif %}>🏅 Breeders</option>
+    <select name="kind" style="border:2px solid #d1fae5; border-radius:14px; padding:10px 16px; font-size:0.95rem; outline:none; background:#fff;">
+        <option value="">All sources</option>
+        <option value="shelter" {% if kind == "shelter" %}selected{% endif %}>🏠 Shelters (free)</option>
+        <option value="breeder" {% if kind == "breeder" %}selected{% endif %}>🏅 Breeders</option>
     </select>
 
-    <button type="submit" class="btn-green">Search</button>
-    {% if search or selected_type or selected_source %}
-      <a href="{% url 'home_page' %}" class="btn-outline">Clear</a>
+    <button type="submit" class="btn btn-teal">Search</button>
+    {% if search or selected_type or kind %}
+        <a href="{% url 'home_page' %}" class="btn btn-outline">Clear</a>
     {% endif %}
   </form>
 </div>
 
-<!-- PET GRID -->
 {% if pets %}
   <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:24px;">
     {% for pet in pets %}
@@ -53,7 +52,6 @@
           {% endif %}
         </div>
 
-        <!-- Info -->
         <div class="p-5">
           <div class="flex items-center justify-between mb-1">
             <h3 style="font-size:1.3rem; font-weight:900;">{{ pet.name }}</h3>
@@ -71,7 +69,7 @@
               <span class="tag">{% if pet.owner.is_shelter %}🏠 Shelter{% else %}🏅 Breeder{% endif %}</span>
             {% endif %}
           </div>
-          <span class="btn-green w-full text-center block text-sm">
+          <span class="btn btn-teal w-full text-center block text-sm">
             {% if pet.is_free %}Adopt{% else %}View{% endif %}
           </span>
         </div>

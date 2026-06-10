@@ -44,7 +44,7 @@
       </div>
       {% endfor %}
 
-      <button type="submit" class="btn-green w-full text-center" style="font-size:1rem; padding:14px;">
+      <button type="submit" class="btn btn-teal w-full text-center" style="font-size:1rem; padding:14px;">
         {% if profile %}Save Changes{% else %}Create Profile{% endif %}
       </button>
     </form>
@@ -52,8 +52,8 @@
 
   {% if profile %}
   <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
-    <a href="{% url 'add_pet' %}" class="btn-green">+ Add New Pet</a>
-    <a href="{% url 'dashboard' %}" class="btn-green"> Dashboard </a>
+    <a href="{% url 'add_pet' %}" class="btn btn-teal">+ Add New Pet</a>
+    <a href="{% url 'dashboard' %}" class="btn btn-teal"> Dashboard </a>
   </div>
   {% endif %}
 </div>

@@ -1,132 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}PetsFamily{% endblock %}</title>
-  {% load static %}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/output.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-      a {
-    text-decoration: none;
-    }
     :root {
-      --green: #3DBE68;
-      --green-dark: #2da057;
-      --green-light: #e8f9ef;
-      --charcoal: #1e2230;
-      --gray: #6b7280;
-      --light: #f7f8fa;
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      --brown-dk: #3b2314;
+      --brown:    #7c4a2b;
+      --teal:     #2d6358;
+      --teal-lt:  #d1f5ee;
+      --rose:     #e05c5c;
+      --sand:     #e8d9c8;
+      --cream:    #faf6f1;
+      --warm:     #f5ede3;
+      --text:     #1e2230;
+      --muted:    #6b7280;
+      --border:   #e5e7eb;
+      --bg:       #f9f7f4;
+      --radius:   14px;
+      --shadow:   0 2px 12px rgba(60,35,20,.07);
     }
-    body { font-family: 'Lato', sans-serif; background: var(--light); color: var(--charcoal); }
-    h1,h2,h3,h4,h5 { font-family: 'Nunito', sans-serif; }
-    .btn-green {
-      background: var(--green);
-      color: #fff;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      border-radius: 12px;
-      padding: 10px 24px;
-      transition: background 0.18s, transform 0.12s;
-      display: inline-block;
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .btn-green:hover { background: var(--green-dark); transform: translateY(-1px); }
-    .btn-outline {
-      border: 2px solid var(--green);
-      color: var(--green);
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      border-radius: 12px;
-      padding: 8px 22px;
-      transition: all 0.18s;
-      display: inline-block;
-    }
-    .btn-outline:hover { background: var(--green); color: #fff; }
-    .card {
+
+    .container    { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem; }
+    .container-sm { max-width: 600px;  margin: 0 auto; padding: 2rem 1.25rem; }
+
+    nav {
       background: #fff;
-      border-radius: 20px;
-      box-shadow: var(--card-shadow);
-      overflow: hidden;
-      transition: transform 0.18s, box-shadow 0.18s;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: .9rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--brown-dk); text-decoration: none;
+    }
+    .nav-links { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .nav-link {
+      color: var(--muted); text-decoration: none;
+      font-size: .88rem; font-weight: 500;
+      padding: .4rem .75rem; border-radius: 8px;
+      transition: background .15s, color .15s;
+    }
+    .nav-link:hover { background: var(--warm); color: var(--brown-dk); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: .4rem; padding: .6rem 1.4rem;
+      border-radius: 10px; font-size: .9rem; font-weight: 600;
+      border: 2px solid transparent; cursor: pointer;
+      text-decoration: none; transition: all .15s;
+      white-space: nowrap; line-height: 1.2;
+    }
+    .btn-sm   { padding: .4rem .9rem; font-size: .82rem; border-radius: 8px; }
+    .btn-full { width: 100%; }
+
+    .btn-primary { background: var(--brown-dk); color: #fff; border-color: var(--brown-dk); }
+    .btn-primary:hover { background: var(--brown); border-color: var(--brown); }
+
+    .btn-teal { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .btn-teal:hover { background: #245249; border-color: #245249; }
+
+    .btn-outline { background: transparent; color: var(--brown-dk); border-color: var(--border); }
+    .btn-outline:hover { border-color: var(--brown); color: var(--brown); background: var(--warm); }
+
+    .btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }
+
+    .btn-logout {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: .88rem; font-weight: 500;
+      padding: .4rem .75rem; border-radius: 8px;
+      font-family: inherit; transition: background .15s, color .15s;
+    }
+    .btn-logout:hover { background: #fee2e2; color: #dc2626; }
+
+    .card {
+      background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
     }
 
-    .navbar-inner {
-  width: 100%;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-}
+    .pet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+    .pet-card {
+      background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+      overflow: hidden; display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .pet-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(60,35,20,.12); }
+    .pet-card-img {
+      height: 190px; overflow: hidden; background: var(--warm);
+      display: flex; align-items: center; justify-content: center; font-size: 4rem;
+    }
+    .pet-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .pet-card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+    .pet-card-name { font-weight: 800; font-size: 1.05rem; color: var(--brown-dk); margin-bottom: .2rem; }
+    .pet-card-meta { font-size: .84rem; color: var(--muted); margin-bottom: .5rem; }
+    .pet-card-price { margin-top: auto; padding-top: .5rem; }
 
-.navbar-links {
-  display: flex;
-  gap: 16px;
-  margin-left: 32px;
-}
+    .badge {
+      display: inline-block; padding: .25rem .7rem;
+      border-radius: 20px; font-size: .78rem; font-weight: 700;
+    }
+    .badge-free,      .price-free { background: #d1fae5; color: #065f46; border-radius: 20px; padding: .25rem .7rem; font-size: .78rem; font-weight: 700; display: inline-block; }
+    .badge-price,     .price-paid { background: #fef3c7; color: #92400e; border-radius: 20px; padding: .25rem .7rem; font-size: .78rem; font-weight: 700; display: inline-block; }
+    .badge-available   { background: #d1fae5; color: #065f46; }
+    .badge-unavailable { background: #fee2e2; color: #991b1b; }
+    .badge-pending     { background: #fef3c7; color: #92400e; }
+    .badge-approved    { background: #d1fae5; color: #065f46; }
+    .badge-rejected    { background: #fee2e2; color: #991b1b; }
+    .badge-shelter     { background: var(--teal-lt); color: var(--teal); }
+    .badge-breeder     { background: #fef3c7; color: #92400e; }
 
-.navbar-auth {
-  margin-left: auto;
-}
-    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.11); }
-    .badge-free { background: var(--green-light); color: var(--green-dark); font-weight: 700; border-radius: 8px; padding: 2px 10px; font-size: 0.8rem; }
-    .badge-price { background: #fff3e0; color: #e07b00; font-weight: 700; border-radius: 8px; padding: 2px 10px; font-size: 0.8rem; }
-    .tag { background: #f0f0f5; color: #555; border-radius: 8px; padding: 2px 10px; font-size: 0.78rem; display: inline-block; }
+    .tag {
+      display: inline-block; background: var(--warm);
+      color: var(--brown); border-radius: 8px;
+      padding: .2rem .65rem; font-size: .8rem; font-weight: 500;
+    }
+
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label {
+      display: block; font-weight: 600; font-size: .88rem;
+      color: var(--brown-dk); margin-bottom: .4rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: .6rem .9rem;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: inherit; font-size: .9rem; color: var(--text);
+      background: #fff; transition: border-color .15s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { outline: none; border-color: var(--brown); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-checkbox { display: flex; align-items: center; gap: .6rem; }
+    .form-checkbox input { width: auto; }
+    .helptext { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
+    .errorlist { list-style: none; margin-top: .3rem; }
+    .errorlist li { color: var(--rose); font-size: .8rem; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    thead tr { background: var(--cream); }
+    th { padding: .75rem 1rem; text-align: left; font-weight: 700; font-size: .78rem;
+         text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    td { padding: .75rem 1rem; border-top: 1px solid var(--border); vertical-align: middle; }
+    tr:hover td { background: var(--cream); }
+
+    .empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--muted); }
+    .empty-state .emoji { font-size: 3rem; margin-bottom: 1rem; }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--brown-dk);
+      margin: 2rem 0 1rem;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--warm) 0%, var(--cream) 100%);
+      padding: 2.5rem 1.25rem 2rem;
+      text-align: center;
+    }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--brown-dk); }
+    .page-header p { color: var(--muted); margin-top: .4rem; }
+
+    .messages { list-style: none; max-width: 1100px; margin: .75rem auto 0; padding: 0 1.25rem; }
+    .messages li {
+      padding: .7rem 1.1rem; border-radius: 10px;
+      font-size: .88rem; font-weight: 500; margin-bottom: .4rem;
+    }
+    .messages .success { background: #d1fae5; color: #065f46; }
+    .messages .info    { background: #dbeafe; color: #1e40af; }
+    .messages .warning { background: #fef3c7; color: #92400e; }
+    .messages .error   { background: #fee2e2; color: #991b1b; }
+
+    footer {
+      margin-top: auto; border-top: 1px solid var(--border);
+      background: #fff; padding: 1.25rem;
+      text-align: center; font-size: .82rem; color: var(--muted);
+    }
+
+    .mt-4 { margin-top: 1rem; }
+    .mb-1 { margin-bottom: .25rem; }
+    .mb-2 { margin-bottom: .5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-5 { margin-bottom: 1.25rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .p-5  { padding: 1.25rem; }
+    .p-8  { padding: 2rem; }
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-start  { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .gap-2 { gap: .5rem; }
+    .gap-3 { gap: .75rem; }
+    .w-full { width: 100%; }
+    .px-8 { padding-left: 2rem; padding-right: 2rem; }
+    .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+    .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
   </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav style="background:#fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
-  <div class="navbar-inner">
-
-    <a href="{% url 'home_page' %}" style="text-decoration: none !important;">
-      <span style="font-family:'Nunito',sans-serif; font-size:2.2rem; font-weight:900; color:var(--green);">
-        🐾 PetsFamily
-      </span>
-    </a>
-
-    <div class="navbar-links">
-      <a href="{% url 'home_page' %}">Home</a>
-      <a href="{% url 'shelter_list' %}">Shelters & Breeders</a>
+<nav>
+  <div class="nav-inner">
+    <a href="{% url 'home_page' %}" class="nav-logo">🐾 PetsFamily</a>
+    <div class="nav-links">
+      <a href="{% url 'home_page' %}"    class="nav-link">Browse Pets</a>
+      <a href="{% url 'shelter_list' %}" class="nav-link">Shelters & Breeders</a>
 
       {% if user.is_authenticated %}
-        <a href="{% url 'my_requests' %}">My Requests</a>
-        <a href="{% url 'profile' %}">Profile</a>
-      {% endif %}
-    </div>
+        {% if user.organization_profile %}
+          <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+          <a href="{% url 'add_pet' %}"   class="nav-link">+ Add Pet</a>
+        {% else %}
+          <a href="{% url 'my_requests' %}" class="nav-link">My Requests</a>
+        {% endif %}
+        <a href="{% url 'profile' %}" class="nav-link">{{ user.username }}</a>
 
-    <div class="navbar-auth">
-      {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}" class="btn-outline">Logout</a>
+        <!-- ✅ LOGOUT — POST форма, не <a> -->
+        <form method="post" action="{% url 'logout' %}" style="margin:0; display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn-logout">Log out</button>
+        </form>
+
       {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'register' %}" class="btn-green">Register</a>
+        <a href="{% url 'login' %}"    class="btn btn-outline btn-sm">Log in</a>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Sign up</a>
       {% endif %}
     </div>
-
   </div>
 </nav>
 
-<!-- MESSAGES -->
 {% if messages %}
-<div class="max-w-6xl mx-auto px-4 mt-4">
-  {% for message in messages %}
-    <div class="rounded-xl px-5 py-3 mb-2 font-semibold text-sm
-      {% if message.tags == 'error' %}bg-red-100 text-red-700
-      {% elif message.tags == 'success' %}bg-green-100 text-green-700
-      {% else %}bg-yellow-100 text-yellow-700{% endif %}">
-      {{ message }}
-    </div>
+<ul class="messages">
+  {% for msg in messages %}
+    <li class="{{ msg.tags }}">{{ msg }}</li>
   {% endfor %}
-</div>
+</ul>
 {% endif %}
 
-<!-- CONTENT -->
-<main class="max-w-6xl mx-auto px-4 py-8">
+<main style="flex:1;">
   {% block content %}{% endblock %}
 </main>
+
+<footer>
+  🐾 PetsFamily &mdash; Find your perfect companion
+</footer>
 
 </body>
 </html>
