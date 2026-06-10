@@ -94,5 +94,3 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 TAILWIND_APP_NAME = "tailwind_theme"
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PetsFam.settings')
